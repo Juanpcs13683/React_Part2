@@ -3,13 +3,13 @@ import Header from "./Header";
 import Part from "./Part";
 
 const Course = ({course}) =>{
-    console.log(course.parts[0])
+    console.log()
     
     return(
         <div>
             <Header text={course.name} />
             {course.parts.map( part =>
-            <Part key={course.parts.id} text={part.name}  value={part.exercises} />
+            <Part key={part.id} text={part.name}  value={part.exercises} />
             ) }
         </div>
     )
