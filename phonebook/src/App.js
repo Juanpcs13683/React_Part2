@@ -8,14 +8,14 @@ const App = () => {
     { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
   const [newName, setNewName] = useState('insert name...')
-  const [newPhone, setNewPhone] = useState('insert new phone')
+  const [newNumber, setNewNumber] = useState('insert new number')
 
  const addperson = (event) => {
   event.preventDefault()
 
   const personObject = {
     name:newName,
-    phone:newPhone,
+    number:newNumber,
     id:persons.length+1
   }
 
@@ -47,7 +47,7 @@ const App = () => {
   }
 
   const handlePhoneChange = (event) => {
-    setNewPhone(event.target.value)
+    setNewNumber(event.target.value)
   }
 
 
@@ -61,17 +61,20 @@ const App = () => {
           name: <input value={newName} onChange={handlePersonChange} />
         </div>
         <div>
-          number : <input value={newPhone}  onChange={handlePhoneChange}/>
+          number : <input value={newNumber}  onChange={handlePhoneChange}/>
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
       <h2>Numbers</h2>
-      {persons.map( person => <p key={person.name}>{person.name}</p>)}
-      <div>debug: {newName}</div>
+      {persons.map( person => <p key={person.name}>{person.name} {person.number}</p>)}
+      
     </div>
   )
 }
+
+//this code is for debugging
+//<div>debug: {newName}</div>
 
 export default App
