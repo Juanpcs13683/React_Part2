@@ -9,6 +9,33 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('insert new number')
 
   //functions to add content
+  const addPerson = (event) => {
+    event.preventDefault()
+    //creamos un nuevo objeto
+    const personOjb = {
+      name: newName,
+      Number, newNumber
+    }
+
+    setPersons(persons.concat(personOjb))
+    setNewName('Persona agregada')
+    setNewNumber('persona agregada')
+  }
+
+  console.log(persons)
+
+//handle = controladores let us to catch up the changes on the actual const
+
+const handleNameChange = (event) => {
+  console.log('target de evento nombre' ,event.target.value)
+  setNewName(event.target.value)
+}
+
+const handleNumberChange = (event) => {
+  console.log('target de evento number', event.target.value)
+  set
+}
+
 
   return(
     <div>
