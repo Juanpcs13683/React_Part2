@@ -10,6 +10,7 @@ const App = () => {
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filter, setFilter] = useState('')
 
   //this part is used to add new persons
   const addPerson = (event) => {
@@ -37,7 +38,7 @@ const App = () => {
     setNewNumber('')
 
   }
-  console.log(persons)
+  //console.log(persons)
 
   //this part let us to change the variable while it is modified
   const handleNameChange = (event) => {
@@ -50,9 +51,22 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleFilterChange = (event) => {
+    console.log(event.target.value)
+    setFilter(event.target.value)
+  }
+
+  //to show filter data
+  const personsToShow = filter === ''
+  ? persons : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
+
   return(
     <div>
       <h2>Phonebook</h2>
+      <div>
+        <label>filter show with <input value={filter} onChange={handleFilterChange} /></label>
+      </div>
+      <h2>add a new</h2>
       <form onSubmit={addPerson}>
         <div>
           name: <input value={newName}  onChange={handleNameChange}/>
@@ -66,9 +80,9 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <div>
-        {persons.map(person => <p key={person.id}>{person.name} {person.number}</p>)}
+        {personsToShow.map(person => <p key={person.id}>{person.name} {person.number}</p>)}
       </div>
-      <div>debug name: {newName}</div>
+      <div>debug filter: {filter}</div>
     </div>
     
   )
