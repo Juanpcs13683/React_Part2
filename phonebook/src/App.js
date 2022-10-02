@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Persons from './components/Persons';
 
 const App = () => {
 
@@ -63,29 +66,18 @@ const App = () => {
   return(
     <div>
       <h2>Phonebook</h2>
-      <div>
-        <label>filter show with <input value={filter} onChange={handleFilterChange} /></label>
-      </div>
+      <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName}  onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <div>
-        {personsToShow.map(person => <p key={person.id}>{person.name} {person.number}</p>)}
-      </div>
-      <div>debug filter: {filter}</div>
+      <Persons personsToShow={personsToShow} />
+     
     </div>
     
   )
+
+  //this piece of code is to debbug into the code when it is rendering
+  // <div>debug filter: {filter}</div>
 }
 
 export default App
