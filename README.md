@@ -1,5 +1,5 @@
 # React_Part2
-This repository is for learning react and made some exercises in the full-stack path,
+This repository is for learning react and make some exercises in the full-stack path.
 
 ## Part 2-b Forms
 ### How to install the json-server
