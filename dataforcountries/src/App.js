@@ -25,8 +25,12 @@ const handleFindChange = (event) => {
 
 const dataFiltered = find === '' ? '' : countries.filter(country => country.name.common.toLowerCase().includes(find.toLowerCase()))
 
+const handleClickShow = (name) => {
+  
+}
 
-  console.log(countries[90])
+
+  //console.log(countries[90])
   return (
     <div>
       <label>find countries <input value={find} onChange={handleFindChange} /></label>
@@ -34,9 +38,9 @@ const dataFiltered = find === '' ? '' : countries.filter(country => country.name
         {dataFiltered === ''? '' 
         : dataFiltered.length>10? <p>Too many matches, specify another filter</p>
         : dataFiltered.length<10 && dataFiltered.length>1  
-        ? dataFiltered.map(country => <p key={country.name.common}>{country.name.common}</p>) 
+        ? dataFiltered.map(country => (<label><p key={country.name.common}>{country.name.common}</p> <button onClick={() => setFind(country.name.common)} > show</button></label>)) 
         : dataFiltered.map(country => 
-        <Country name={country.name.common} capital={country.capital} area={country.area} languages={country.languages} img={country.flags.png} />
+        <Country p={country} />
         )}
       </div>
     </div>
