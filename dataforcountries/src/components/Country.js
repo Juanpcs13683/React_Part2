@@ -1,19 +1,22 @@
 import React from 'react';
+import Weather from './Weather';
 
 const Country = (props) =>{
-    //console.log(props.name)
+    const country = props.p
     //console.log("language",Object.values(props.languages))
     return(
         <div>
-            <h2 key={props.p.name.common}>{props.p.name.common}</h2>
-            <p><b>Capital:</b> {props.p.capital}</p>
-            <p><b>Area:</b> {props.p.area}</p>
+            <h2 key={country.name.common}>{country.name.common}</h2>
+            <p><b>Capital:</b> {country.capital}</p>
+            <p><b>Area:</b> {country.area}</p>
             
             <h3>languages:</h3>
             <ul>
-                {Object.values(props.p.languages).map(language=> <li>{language}</li>)}
+                {Object.values(country.languages).map(language=> <li>{language}</li>)}
             </ul>
-            <img src={props.p.flags.png} width="120px" />
+            <img src={country.flags.png} width="120px" />
+            <h3>Weather Helsinki</h3>
+            <Weather p={country} />
         </div>
     )
 }

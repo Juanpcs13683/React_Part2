@@ -25,9 +25,7 @@ const handleFindChange = (event) => {
 
 const dataFiltered = find === '' ? '' : countries.filter(country => country.name.common.toLowerCase().includes(find.toLowerCase()))
 
-const handleClickShow = (name) => {
-  
-}
+
 
 
   //console.log(countries[90])

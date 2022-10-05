@@ -10,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  
 
 //we need to use a useEffect hook to get the data from the server, in this case the server
 //is json-server
