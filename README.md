@@ -30,6 +30,9 @@ the **db.json** and this will result:
 we install the axios dependences with the next command ```npm install axios``` in the root of our **phonebook application** and we can see if it was done by checking at 
 ```package.json``` in root of our app.
 
+### Runing the json server from the root of the app
+To run the **json-server** from the root of the app we can use this code: ```npx json-server --port 3001 --watch db.json```
+
 ### 2- Installing the ```json-server```
 we can use the command ```npm install json-server --save-dev``` to install the json server and then we need to add some the next code on the ```package.json``` so this have to be like this:
 ```
@@ -71,4 +74,47 @@ as we can see in the code above we use the ***useEffect** hook to get the data, 
 ### Making the app renderin automatic in the server
 we need to create a file in the root of the app ```.env``` and we just write the next **```FAST_REFRESH=false```** inside the file and that will be all.
 
+## How to get data acces from the openweather api
+The first thing is get to the website and sign up to get an user and an api key to get acces to the api data from the server and then you can implement it on your react application, one you have the data you store it into the an array and you can pass to the child components.
 
+## Creating a new item and storing it into the json-server
+In our case we use the method ```post``` from the ```axios``` package and we need to send the new method that need contains all the info stored in the new object that is the same as the array
+in our case we are working on the notes appication and we need to add a new note, so thats why we use the the object in the function add a newNote and the object that get the info from the **HTML** and send it in Json format.
+The lesson tell us to ommit the **id** element from the object it due to the json create its owns ids for the object, in our case we send the response info to the console.
+
+### Render the data after sending to backend with POST method
+we add some part of code to our application to let if make like this:
+
+```addNote = event => {
+  event.preventDefault()
+  const noteObject = {
+    content: newNote,
+    date: new Date(),
+    important: Math.random() > 0.5,
+  }
+
+  axios
+    .post('http://localhost:3001/notes', noteObject)
+    .then(response => {
+      setNotes(notes.concat(response.data))
+      setNewNote('')
+    })
+}
+```
+
+### Change the importance of each note
+we can change the importance by adding a toggle to the button with the next function:
+
+
+```const Note = ({ note, toggleImportance }) => {
+  const label = note.important
+    ? 'make not important' : 'make important'
+
+  return (
+    <li>
+      {note.content} 
+      <button onClick={toggleImportance}>{label}</button>
+    </li>
+  )
+}
+```
