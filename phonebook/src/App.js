@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import noteServices from './services/persons'
 
 const App = () => {
 
@@ -15,9 +16,8 @@ const App = () => {
 //we need to use a useEffect hook to get the data from the server, in this case the server
 //is json-server
 useEffect(() => {
-  console.log('effect')
   axios.get('http://localhost:3001/persons').then(response => {
-    console.log('promise fulfilled')
+    console.log('promise get fulfilled')
     setPersons(response.data)
   })
 },[])
@@ -33,37 +33,43 @@ useEffect(() => {
       id: persons.length+1
     }
 
-    let repetido = false
+//    let repetido = false
 
-    for(let i=0; i<persons.length; i++){
-      //personObj.name === persons[i].name just for name
-      if(JSON.stringify(personObj.name) === JSON.stringify(persons[i].name)){
-        repetido = true
-        break
-      }
-    }
-    const sav = repetido 
+ //   for(let i=0; i<persons.length; i++){
+ //     //personObj.name === persons[i].name just for name
+ //     if(JSON.stringify(personObj.name) === JSON.stringify(persons[i].name)){
+  //      repetido = true
+    //    break
+     // }
+   // }
+
+
+   // I replaced the logic below just using the find function when returns somethins
+   //it returns the object and true if something and false if not
+   //const name = persons.find(person => person.name === personObj.name)
+
+   persons.find(person => person.name === personObj.name)
     ? window.alert(personObj.name+' is already added to phonebook')
-    : setPersons(persons.concat(personObj))
+    : axios.post('http://localhost:3001/persons', personObj)
+    .then(response => {setPersons(persons.concat(response.data))
+      console.log(response.data)
     setNewName('')
     setNewNumber('')
-
+    })
   }
   //console.log(persons)
 
   //this part let us to change the variable while it is modified
   const handleNameChange = (event) => {
-    console.log('cambio en el evento nombre', event.target.value)
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log('cambio en evento numero', event.target.value)
     setNewNumber(event.target.value)
   }
 
   const handleFilterChange = (event) => {
-    console.log(event.target.value)
+    //console.log(event.target.value)
     setFilter(event.target.value)
   }
 
