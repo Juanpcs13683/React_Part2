@@ -3,7 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
-import noteServices from './services/persons'
+import personServices from './services/persons'
 
 const App = () => {
 
@@ -16,9 +16,9 @@ const App = () => {
 //we need to use a useEffect hook to get the data from the server, in this case the server
 //is json-server
 useEffect(() => {
-  axios.get('http://localhost:3001/persons').then(response => {
+  personServices.getAll().then(intialPersons => {
     console.log('promise get fulfilled')
-    setPersons(response.data)
+    setPersons(intialPersons)
   })
 },[])
 
@@ -29,8 +29,7 @@ useEffect(() => {
 
     const personObj = {
       name: newName,
-      number: newNumber,
-      id: persons.length+1
+      number: newNumber
     }
 
 //    let repetido = false
@@ -50,9 +49,9 @@ useEffect(() => {
 
    persons.find(person => person.name === personObj.name)
     ? window.alert(personObj.name+' is already added to phonebook')
-    : axios.post('http://localhost:3001/persons', personObj)
-    .then(response => {setPersons(persons.concat(response.data))
-      console.log(response.data)
+    : personServices.create(personObj)
+    .then(returnedPerson => {setPersons(persons.concat(returnedPerson))
+      console.log(returnedPerson)
     setNewName('')
     setNewNumber('')
     })
@@ -77,6 +76,32 @@ useEffect(() => {
   const personsToShow = filter === ''
   ? persons : persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
 
+  //handler for delete an object
+  const handleDelete = (event) =>{
+    const id= event.target.value
+
+
+    if(window.confirm(`Delete ${event.target.name} ?`)){
+      personServices.delet(id)
+      .then(response =>{
+        console.log('resquest delete done')
+        setPersons(persons.filter(p => p.id != id))
+//       persons.forEach(element => {
+  //      if(element.id != id){
+    //      window.alert(element)
+      //    console.log(element)
+       // }
+        
+      // });
+     
+      })
+    }
+    
+      
+      //setPersons()
+    
+  }
+
   return(
     <div>
       <h2>Phonebook</h2>
@@ -85,7 +110,7 @@ useEffect(() => {
       <PersonForm addPerson={addPerson} newName={newName}
        handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons personsToShow={personsToShow} />
+      <Persons personsToShow={personsToShow} handleDelete={handleDelete}/>
      
     </div>
     
