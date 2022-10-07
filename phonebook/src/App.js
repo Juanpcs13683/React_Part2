@@ -4,6 +4,8 @@ import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 import personServices from './services/persons'
+import NotificationSuccess from './services/NotificationSuccess';
+import NotificationError from './services/NotificationError';
 
 const App = () => {
 
@@ -11,6 +13,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
+  const [successMessage, setSuccessMessage] = useState(null)
   
 
 //we need to use a useEffect hook to get the data from the server, in this case the server
@@ -52,12 +56,27 @@ useEffect(() => {
    window.confirm(`${personObj.name} is already added to phonebook, replace the old number with a new one?`)
    ? personServices.update(person.id, personObj)
    .then(response => setPersons(persons.map(person => person.name !== personObj.name ? person : response)))
+   .then(response => {setSuccessMessage( `Modified number of  ${person.name} to ${personObj.number}`)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000);})
+    .catch(error=>{
+      setErrorMessage(`Information of ${personObj.name} has already been removed from server`)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
+    })
    : console.log()
     : personServices.create(personObj)
     .then(returnedPerson => {setPersons(persons.concat(returnedPerson))
       console.log(returnedPerson)
     setNewName('')
     setNewNumber('')
+    setSuccessMessage(`Added ${personObj.name}`)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    }, 5000);
+
     })
   }
   //console.log(persons)
@@ -82,14 +101,19 @@ useEffect(() => {
 
   //handler for delete an object
   const handleDelete = (event) =>{
-    const id= event.target.value
-
+    
 
     if(window.confirm(`Delete ${event.target.name} ?`)){
-      personServices.delet(id)
+      personServices.delet(event.target.value)
       .then(response =>{
         console.log('resquest delete done')
-        setPersons(persons.filter(p => p.id != id))
+        setErrorMessage(`${event.target.name} has been deleted`)
+        setPersons(persons.filter(p => p.id != event.target.value))
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000);
+        
+
 //       persons.forEach(element => {
   //      if(element.id != id){
     //      window.alert(element)
@@ -109,6 +133,8 @@ useEffect(() => {
   return(
     <div>
       <h2>Phonebook</h2>
+      <NotificationSuccess messageSuccess={successMessage} />
+      <NotificationError messageError={errorMessage} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <h2>add a new</h2>
       <PersonForm addPerson={addPerson} newName={newName}
