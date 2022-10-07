@@ -46,9 +46,13 @@ useEffect(() => {
    // I replaced the logic below just using the find function when returns somethins
    //it returns the object and true if something and false if not
    //const name = persons.find(person => person.name === personObj.name)
+    const person = persons.find(person => person.name == personObj.name)
 
-   persons.find(person => person.name === personObj.name)
-    ? window.alert(personObj.name+' is already added to phonebook')
+   persons.find(person => person.name === personObj.name )? 
+   window.confirm(`${personObj.name} is already added to phonebook, replace the old number with a new one?`)
+   ? personServices.update(person.id, personObj)
+   .then(response => setPersons(persons.map(person => person.name !== personObj.name ? person : response)))
+   : console.log()
     : personServices.create(personObj)
     .then(returnedPerson => {setPersons(persons.concat(returnedPerson))
       console.log(returnedPerson)
