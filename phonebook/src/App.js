@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
@@ -21,7 +20,7 @@ const App = () => {
 //is json-server
 useEffect(() => {
   personServices.getAll().then(intialPersons => {
-    console.log('promise get fulfilled')
+    //console.log('promise get fulfilled')
     setPersons(intialPersons)
   })
 },[])
@@ -56,12 +55,18 @@ useEffect(() => {
    window.confirm(`${personObj.name} is already added to phonebook, replace the old number with a new one?`)
    ? personServices.update(person.id, personObj)
    .then(response => setPersons(persons.map(person => person.name !== personObj.name ? person : response)))
-   .then(response => {setSuccessMessage( `Modified number of  ${person.name} to ${personObj.number}`)
+   .then(response => {
+    setNewName('')
+    setNewNumber('')
+    setSuccessMessage( `Modified number of  ${person.name} to ${personObj.number}`)
     setTimeout(() => {
       setSuccessMessage(null)
     }, 5000);})
     .catch(error=>{
-      setErrorMessage(`Information of ${personObj.name} has already been removed from server`)
+      ///new console error from the server
+          //console.log(error.response.data.error)
+      //setErrorMessage(`Information of ${personObj.name} has already been removed from server`)
+      setErrorMessage(error.response.data.error)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000);
@@ -69,7 +74,7 @@ useEffect(() => {
    : console.log()
     : personServices.create(personObj)
     .then(returnedPerson => {setPersons(persons.concat(returnedPerson))
-      console.log(returnedPerson)
+      //console.log(returnedPerson)
     setNewName('')
     setNewNumber('')
     setSuccessMessage(`Added ${personObj.name}`)
@@ -77,6 +82,11 @@ useEffect(() => {
       setSuccessMessage(null)
     }, 5000);
 
+    }).catch(error =>{
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000);
     })
   }
   //console.log(persons)

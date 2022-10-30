@@ -2,7 +2,8 @@ import axios from "axios"
 
 
 // url to connect the server
-const baseUrl = 'http://localhost:3001/persons'
+//const baseUrl = 'http://localhost:3001/api/persons' // this was with local json-server and node server
+const baseUrl = '/api/persons' //this will be for the build and integration in node express
 
 //method to get all the data
 const getAll = () => {

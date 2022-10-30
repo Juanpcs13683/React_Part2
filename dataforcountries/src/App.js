@@ -31,7 +31,7 @@ const dataFiltered = find === '' ? '' : countries.filter(country => country.name
   //console.log(countries[90])
   return (
     <div>
-      <label>find countries <input value={find} onChange={handleFindChange} /></label>
+      <label>find countries <input value={find} onChange={handleFindChange} placeholder='Type a country'/></label>
       <div>
         {dataFiltered === ''? '' 
         : dataFiltered.length>10? <p>Too many matches, specify another filter</p>

@@ -1,31 +1,27 @@
-import React, { useEffect, useState } from "react"
-import axios from 'axios'
+import React, { useEffect, useRef, useState } from "react"
 import Note from "./components/Note"
 import noteService from './services/notes'
 import Notification from "./components/Notification"
+import loginService from './services/login'
+import LoginForm from "./components/LoginForm"
+import Togglable from "./components/Togglable"
+import NoteForm from "./components/NoteForm"
+import Footer from "./components/Footer"
 
-const Footer = () => {
-  const footerStyle = {
-    color: 'green',
-    fontStyle: 'italic',
-    fontSize: 16
-  }
-  return(
-    <div style={footerStyle}>
-      <br />
-      <em>Note app, Department of Computer Science, University of Helsinki 2022</em>
-    </div>
-  )
-}
 
 
 const App = () => {
 
 
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('a new note ...')
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
+  
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const [user, setUser] = useState(null)
+
 
   //------------------------------------
   // Get all notes
@@ -36,6 +32,37 @@ const App = () => {
       setNotes(intialNotes)
     })
 },[])
+
+//verying if the logged in details are avaible
+useEffect(() => {
+  const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+  if (loggedUserJSON) {
+    const user = JSON.parse(loggedUserJSON)
+    setUser(user)
+    noteService.setToken(user.token)
+  }
+},[])
+
+//-------------------------------
+const handleLogin = async (event) => {
+  event.preventDefault()
+  try {
+    const user = await loginService.login({ username, password, })
+    setUser(user)
+    noteService.setToken(user.token)
+    window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user)) 
+    setUsername('')
+    setPassword('')
+  } catch (exception) {
+    setErrorMessage('wrong credentials')
+    setTimeout(() => {
+      setErrorMessage(null)
+    }, 5000)
+  }
+}
+
+
+
 
 // ---------------------------------------
   const toggleImportanceOf = id => {
@@ -62,46 +89,58 @@ const App = () => {
 
 //------------------------------------
 // this is for add a new note
-  const addNote = (event) => {
-    event.preventDefault()
-    //console.log('button clicked', event.target)
-    const noteObject = {
-      content: newNote,
-      date: new Date().toISOString(),
-      important: Math.random() < 0.5
-      //id: notes.length + 1,
-    }
+  const addNote = (noteObject) => {
 
-    //setNotes(notes.concat(noteObject))
-    //setNewNote('')
-    //in this space we use the axios post metod to send the information
-    // to the server and store in a new object that containts its info
+    noteFormRef.current.toggleVisibility()
+
     noteService.create(noteObject)
     .then(returnedNote => {
       console.log('respuesta del post',returnedNote)
       setNotes(notes.concat(returnedNote))
-      setNewNote('')
+    }).catch(error => {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 4000);
     })
   }
 
-  const handleNoteChange = (event) => {
-    console.log(event.target.value)
-    setNewNote(event.target.value)
-  }
+
 
   //to show important items
   const notesToShow = showAll
   ? notes
   : notes.filter(note => note.important === true)
 
+  const noteFormRef = useRef()
 
-
-
-
+  const noteForm = () => (
+    <Togglable buttonLabel="new note" ref={noteFormRef}>
+      <NoteForm createNote={addNote} />
+    </Togglable>
+  )
+  
   return (
     <div>
       <h1>Notes</h1> 
       <Notification message={errorMessage} />
+
+      {user === null ? 
+        <Togglable buttonLabel='login'>
+          <LoginForm 
+          username={username}
+          password={password}
+          handleUsernameChange={({ target }) => setUsername(target.value)}
+          handlePasswordChange={({ target }) => setPassword(target.value)}
+          handleSubmit={handleLogin}
+          />
+        </Togglable> :
+        <div>
+          <p>{user.name} logged in</p>
+          {noteForm()}
+        </div>
+      }
+      
       <div>
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all'}
@@ -112,10 +151,7 @@ const App = () => {
           <Note key={note.id} note={note} toggleImportance={()=> toggleImportanceOf(note.id)} />
         )}
       </ul>
-      <form onSubmit={addNote}>
-          <input value={newNote} onChange={handleNoteChange} />
-          <button type="submit">save</button>
-      </form>
+
       <Footer />
     </div>
   )
